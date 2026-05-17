@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@theme {
+  --color-sv-bg: #060B16;
+  --color-sv-card: #0B1220;
+  --color-sv-primary: #2563EB;
+  --color-sv-accent: #3B82F6;
+  --color-sv-success: #22C55E;
+  --color-sv-danger: #EF4444;
+  --color-sv-pending: #F59E0B;
+  --color-sv-text-primary: #F8FAFC;
+  --color-sv-text-secondary: #94A3B8;
+  --color-sv-border: rgba(255,255,255,0.06);
+  --color-sv-border-hover: rgba(255,255,255,0.12);
+
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-sv-bg text-sv-text-primary font-sans antialiased;
+  }
+  
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+    scroll-behavior: smooth;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .glass-panel {
+    @apply bg-sv-card/80 backdrop-blur-xl border border-sv-border shadow-[0_4px_24px_-2px_rgba(0,0,0,0.5)];
+  }
+  
+  .glow-blue {
+    @apply shadow-[0_0_15px_-3px_rgba(59,130,246,0.3)];
+  }
+  
+  .glow-green {
+    @apply shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)];
+  }
+  
+  .glow-red {
+    @apply shadow-[0_0_15px_-3px_rgba(239,68,68,0.3)];
+  }
+  
+  .glow-orange {
+    @apply shadow-[0_0_15px_-3px_rgba(245,158,11,0.3)];
+  }
+
+  .premium-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+}

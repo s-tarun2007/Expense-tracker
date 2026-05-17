@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Member": {
+      "title": "Member",
+      "description": "A member who owes or has paid a payment.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string", "enum": ["Paid", "Unpaid", "Pending"] },
+        "team": { "type": "string" },
+        "proofUrl": { "type": "string" },
+        "notes": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["name", "phone", "amount", "status", "createdAt", "updatedAt"]
+    },
+    "Activity": {
+      "title": "Activity",
+      "description": "A log of an action that occurred.",
+      "type": "object",
+      "properties": {
+        "user": { "type": "string" },
+        "action": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "type": { "type": "string", "enum": ["upload", "status_change", "budget", "add_member"] },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["user", "action", "timestamp", "type", "createdAt"]
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "Admin settings and budget tracking.",
+      "type": "object",
+      "properties": {
+        "totalBudget": { "type": "number" },
+        "spentAmount": { "type": "number" },
+        "qrUpiId": { "type": "string" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["totalBudget", "spentAmount", "qrUpiId", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "members": {
+      "schema": { "$ref": "#/entities/Member" },
+      "description": "Collection of all members"
+    },
+    "activities": {
+      "schema": { "$ref": "#/entities/Activity" },
+      "description": "Collection of all dashboard activities"
+    },
+    "settings": {
+      "schema": { "$ref": "#/entities/Settings" },
+      "description": "A single document ('admin') containing budget and global settings"
+    }
+  }
+}

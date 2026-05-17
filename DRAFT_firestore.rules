@@ -1,0 +1,66 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Phase 3: Primitives
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isSignedIn() { return request.auth != null; }
+
+    // Validation Blueprints
+    function isValidMember(data) {
+      return data.keys().hasAll(['name', 'phone', 'amount', 'status', 'createdAt', 'updatedAt'])
+        && data.name is string && data.name.size() <= 100
+        && data.phone is string && data.phone.size() <= 20
+        && data.amount is number
+        && data.status is string && data.status.matches('^(Paid|Unpaid|Pending)$')
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidActivity(data) {
+      return data.keys().hasAll(['user', 'action', 'timestamp', 'type', 'createdAt'])
+        && data.user is string && data.user.size() <= 100
+        && data.action is string && data.action.size() <= 200
+        && data.timestamp is number
+        && data.type is string && data.type.matches('^(upload|status_change|budget|add_member)$')
+        && data.createdAt is timestamp;
+    }
+
+    function isValidSettings(data) {
+      return data.keys().hasAll(['totalBudget', 'spentAmount', 'qrUpiId', 'updatedAt'])
+        && data.totalBudget is number
+        && data.spentAmount is number
+        && data.qrUpiId is string && data.qrUpiId.size() <= 200
+        && data.updatedAt is timestamp;
+    }
+
+    match /members/{memberId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(memberId) && isValidMember(incoming());
+      allow update: if isSignedIn() && isValidId(memberId) && isValidMember(incoming());
+      allow delete: if isSignedIn() && isValidId(memberId);
+    }
+
+    match /activities/{activityId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(activityId) && isValidActivity(incoming());
+      allow update: if isSignedIn() && isValidId(activityId) && isValidActivity(incoming());
+      allow delete: if isSignedIn() && isValidId(activityId);
+    }
+
+    match /settings/{settingId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(settingId) && isValidSettings(incoming());
+      allow update: if isSignedIn() && isValidId(settingId) && isValidSettings(incoming());
+    }
+  }
+}
